@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pelicula</title>
+</head>
+<body>
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <!-- Mostramos el trailer si lo tiene -->
+        {% if pelicula.trailer %}
+            <iframe 
+                src="{{ pelicula.trailer }}" 
+                width="900" 
+                height="500" 
+                frameborder="0" 
+                allowfullscreen>
+            </iframe>
+        {% endif %}
+    
+    <div class="row">
+        <!-- Mostramos la portada si la tiene, sino su título -->
+        <div class="col-md-3 mt-4">
+            {% if pelicula.imagen_portada %}
+                <img src="{{ pelicula.imagen_portada }}" alt="{{ pelicula.titulo }}" class="img-fluid">
+            {% endif %}
+        </div>
+        <div class="col-md-8 mt-4">
+            <h1>{{ pelicula.titulo }}</h1>
+            
+            <!-- Si el user está logeado puede marcar/desmarcar favorito y visto -->
+            {% if user.is_authenticated %}
+                <div class="btn-group mb-3">
+                    <a href="{% url 'marcar_favorito' 'pelicula' pelicula.id %}" 
+                    class="btn btn-outline-danger">
+                        {% if favorito %}
+                            ❤️
+                        {% else %}
+                            🤍
+                        {% endif %}
+                    </a>
+                    <a href="{% url 'marcar_visto' 'pelicula' pelicula.id %}"
+                    class="btn btn-outline-success">
+                        {% if visto %}
+                            ✅
+                        {% else %}
+                            ⬜
+                        {% endif %}
+                    </a>
+                </div>
+            {% endif %}
+
+            <!-- Información detallada de la película -->
+            <p><strong>Director:</strong> {{ pelicula.director }}</p>
+            <p><strong>Año:</strong> {{ pelicula.anio }}</p>
+            <p><strong>Duración:</strong> {{ pelicula.duracion }}</p>
+            <p><strong>Categoría:</strong> {{ pelicula.categoria }}</p>
+            
+            <h3>Sinopsis</h3>
+            <p>{{ pelicula.comentario }}</p>
+            
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+</body>
+</html>

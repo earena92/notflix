@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil - NotFlix</title>
+</head>
+
+<body>
+    {% extends 'base.html' %}
+
+    {% block content %}
+    <main class="container">
+        <h1 class="text-center mb-4">Mi Perfil</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <div>
+                    <!-- Botón que redirige a cambiar_contrasenia -->
+                    <a href="{% url 'cambiar_contrasenia' %}" class="btn btn-dark mb-4">Cambiar Contraseña</a>
+
+                    <!-- Mostramos el mensaje si el user ha cambiado la contraseña -->
+                    {% if messages %}
+                    <div class="text-success">
+                        {% for message in messages %}
+                        <ul class="md-6">
+                            <li>{{ message }}</li>
+                    </div>
+                    {% endfor %}
+                    </ul>
+                    {% endif %}
+
+                    <div>
+                        <h3>Películas Vistas</h3>
+                        <ul>
+                            <!-- Recorremos y listamos las películas_vistas -->
+                            {% for titulo in peliculas_vistas %}
+                            <li>{{ titulo.pelicula.titulo }} - {{ titulo.pelicula.duracion }} hs</li>
+                            {% empty %}
+                            <li>No has visto ninguna película.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3>Series Vistas</h3>
+                        <ul>
+                            <!-- Recorremos y listamos las series_vistas -->
+                            {% for titulo in series_vistas %}
+                            <li>{{ titulo.serie.titulo }} - {{ titulo.serie.capitulos }} capítulos de {{titulo.serie.duracion_capitulo }} hs </li>
+                            {% empty %}
+                            <li>No has visto ninguna serie.</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <!-- Estadísticas del usuario -->
+                        <h3>Tiempo de Visualización</h3>
+                        <p>Películas: {{ tiempo_peliculas }} hs</p>
+                        <p>Series: {{ tiempo_series }} hs</p>
+                        <h4>Total: {{ tiempo_total }} hs</h4>
+                    </div>
+                </div>
+            </div>
+            <!-- Gráfico con tiempo de series y películas -->
+            <div class="col-md-6 d-flex align-items-center">
+                <canvas id="grafico"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <!-- Importamos Chart.js -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.8.0/chart.min.js"></script>
+    <!-- Cremos el gráfico -->
+    <script>
+        // Convertimos las variables de tiempo_peliculas y tiempo_series a float 
+        const tiempoPeliculasMinutos = parseFloat("{{ tiempo_peliculas_minutos }}");
+        const tiempoSeriesMinutos = parseFloat("{{ tiempo_series_minutos }}");
+
+        // Definimos las etiquetas
+        const labels = ['Películas', 'Series'];
+        // Se relaciona con el elemento de <canvas> del html y se define el gráfico en dos dimensiones
+        const graph = document.getElementById('grafico').getContext('2d');
+
+        // Datos del gráfico
+        const data = {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Tiempo de Visualización (en minutos)', // Leyenda
+                    data: [tiempoPeliculasMinutos, tiempoSeriesMinutos], // Datos de tiempo de visualización
+                    backgroundColor: 'rgba(201, 32, 32, 0.5)', // Color de las barras
+                }]
+        };
+
+        // Configuración del gráfico
+        const config = {
+            type: 'bar',
+            data: data,
+        };
+
+        // Inicializar y renderizar el gráfico
+        new Chart(graph, config);
+    </script>
+    {% endblock %}
+</body>
+
+</html>

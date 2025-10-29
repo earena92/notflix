@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .card-img-top {
+            width: 100%;
+            height: 300px;
+            object-fit: contain;
+            background-color: black
+        }
+
+        .card-title {
+            color: white !important;
+            font-weight: bold;
+        }
+
+        .card-text {
+            color: white
+        }
+    </style>
+</head>
+<body>
+    {% extends 'base.html' %}
+
+    {% block content %}
+    <div class="container mt-4">
+        <h2>Resultados de búsqueda para: "{{ query }}"</h2>
+        
+        <!-- Si no hay resultados mostramos un mensaje -->
+        {% if not resultados_peliculas and not resultados_series %}
+            <div class="alert alert-danger mt-4">
+                No se encontraron resultados para tu búsqueda.
+            </div>
+        {% endif %}
+        
+        <!-- Si hay películas, las listamos -->
+        {% if resultados_peliculas %}
+            <h3 class="mt-4">Películas</h3>
+            <div class="row">
+                {% for pelicula in resultados_peliculas %}
+                <div class="col-md-4 mb-4">
+                    <div class="card d-flex flex-column">
+                        {% if pelicula.imagen_portada %}
+                            <a href="{% url 'pelicula_detalle' pelicula.id %}">
+                                <img src="{{ pelicula.imagen_portada }}" class="card-img-top" alt="{{ pelicula.titulo }}">
+                            </a>
+                        {% else %}
+                            <a href="{% url 'pelicula_detalle' pelicula.id %}">
+                                <h1>{{pelicula.titulo}}</h1>
+                            </a>
+                        {% endif %}
+
+                        <div class="card-body">
+                            <h5 class="card-title">{{ pelicula.titulo }}</h5>
+                            <p class="card-text">
+                                <small>{{ pelicula.director }} - {{ pelicula.anio }}</small>
+                            </p>
+                            
+                            <!-- Si el user está logeado se muestaran los botones de favorito y visto -->
+                            {% if user.is_authenticated %}
+                                <div class="btn-group">
+                                    <a href="{% url 'marcar_favorito' 'pelicula' pelicula.id %}" class="btn btn-outline-danger">
+                                        {% if pelicula.id in favoritos_peliculas %}
+                                        ❤️
+                                        {% else %}
+                                        🤍
+                                        {% endif %}
+                                    </a>
+                                    <a href="{% url 'marcar_visto' 'pelicula' pelicula.id %}" class="btn btn-outline-success">
+                                        {% if pelicula.id in vistos_peliculas %}
+                                        ✅
+                                        {% else %}
+                                        ⬜️
+                                        {% endif %}
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <!-- Series -->
+        {% if resultados_series %}
+            <h3 class="mt-4">Series</h3>
+            <div class="row">
+                {% for serie in resultados_series %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card d-flex flex-column">
+                            {% if serie.imagen_portada %}
+                                <a href="{% url 'serie_detalle' serie.id %}">
+                                    <img src="{{ serie.imagen_portada }}" class="card-img-top" alt="{{ serie.titulo }}">
+                                </a>
+                            {% else %}
+                                <a href="{% url 'serie_detalle' serie.id %}">
+                                    <h1>{{serie.titulo}}</h1>
+                                </a>
+                            {% endif %}
+
+                            <div class="card-body">
+                                <h5 class="card-title">{{ serie.titulo }}</h5>
+                                <p class="card-text">
+                                    <small>{{ serie.director }} - {{ serie.anio }}</small>
+                                </p>
+
+                                <!-- Botones fav y visto -->
+                                {% if user.is_authenticated %}
+                                    <div class="btn-group">
+                                        <a href="{% url 'marcar_favorito' 'serie' serie.id %}" class="btn btn-outline-danger">
+                                            {% if serie.id in favoritos_series %}
+                                                ❤️
+                                            {% else %}
+                                                🤍
+                                            {% endif %}
+                                        </a>
+                                        <a href="{% url 'marcar_visto' 'serie' serie.id %}" class="btn btn-outline-success">
+                                            {% if serie.id in vistos_series %}
+                                                ✅
+                                            {% else %}
+                                                ⬜
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    {% endblock %}
+</body>
+</html>

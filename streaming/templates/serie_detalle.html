@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="text-center mb-4">
+        <!-- Mostramos el trailer si lo tiene -->
+        {% if serie.trailer %}
+        <iframe 
+            src="{{ serie.trailer }}" 
+            width="900" 
+            height="500" 
+            frameborder="0" 
+            allowfullscreen>
+        </iframe>
+        {% endif %}
+
+    <div class="row">
+        <!-- Mostramos la portada si la tiene, sino su título -->
+        <div class="col-md-3 mt-4">
+            {% if serie.imagen_portada %}
+                <img src="{{ serie.imagen_portada }}" alt="{{ serie.titulo }}" class="img-fluid">
+            {% endif %}
+        </div>
+        <div class="col-md-8 mt-4">
+            <h1>{{ serie.titulo }}</h1>
+            
+            <!-- Si el user está logeado puede marcar/desmarcar favorito y visto -->
+            {% if user.is_authenticated %}
+            <div class="btn-group mb-3">
+                <a href="{% url 'marcar_favorito' 'serie' serie.id %}" 
+                   class="btn btn-outline-danger">
+                    {% if favorito %}
+                        ❤️
+                    {% else %}
+                        🤍
+                    {% endif %}
+                </a>
+                <a href="{% url 'marcar_visto' 'serie' serie.id %}"
+                   class="btn btn-outline-success">
+                    {% if visto %}
+                        ✅
+                    {% else %}
+                        ⬜
+                    {% endif %}
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Información detallada de la serie -->
+            <p><strong>Director:</strong> {{ serie.director }}</p>
+            <p><strong>Año:</strong> {{ serie.anio }}</p>
+            <p><strong>Temporadas:</strong> {{ serie.temporadas }}</p>
+            <p><strong>Capítulos:</strong> {{ serie.capitulos }}</p>
+            <p><strong>Duración de capítulo:</strong> {{ serie.duracion_capitulo }}</p>
+            <p><strong>Categoría:</strong> {{ serie.categoria }}</p>
+            
+            <h3>Sinopsis</h3>
+            <p>{{ serie.comentario }}</p>
+            
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotFlix</title>
+</head>
+
+<body>
+    {% extends 'base.html' %}
+
+    {% block content %}
+
+
+    <main class="container">
+        <div class="row">
+            <div class="col-md-4 offset-md-4 mt-5">
+                <!-- Formulario de Login -->
+                <form action="/signin/" method="POST">
+                    <h2 class="text-center">Iniciar Sesión</h2>
+                    {% csrf_token %}
+
+                    <!-- Usuario -->
+                    <div class="mb-3">
+                        <label for="username">Username:</label>
+                        <input type="text" name="username" id="username" class="form-control">
+                    </div>
+                    
+                    <!-- Contraseña -->
+                    <div class="mb-3">
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" id="password" class="form-control">
+                    </div>
+
+                    <!-- Errores de autenticación (user=None) -->
+                    <div>
+                        <ul class="text-danger">
+                            {% if error %}
+                            <li>
+                                {{error}}
+                            </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <!-- Errores de login_required -->
+                    {% if messages %}
+                    <div class="text-danger">
+                        {% for message in messages %}
+                        <ul class="md-6">
+                            <li>{{ message }}</li>
+                        </ul>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <!-- Botón -->
+                    <a class="text-center">
+                        <button class="col-md-4 mt-2 btn btn-dark">
+                            Login
+                        </button>
+                    </a>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    {% endblock %}
+</body>
+
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotFlix</title>
+    <style>
+        .card-img-top {
+            width: 100%;
+            height: 300px;
+            object-fit: contain;
+            background-color: black
+        }
+
+        .card-title {
+            color: white !important;
+            font-weight: bold;
+        }
+
+        .card-text {
+            color: white
+        }
+    </style>
+</head>
+
+<body>
+    {% extends 'base.html' %}
+
+    {% block content %}
+    <div class="container mt-4">
+        <h1>Favoritos</h1>
+
+        <!-- Verificamos si hay películas o series favoritas y las listamos -->
+        {% if peliculas_favoritas or series_favoritas %}
+            {% if peliculas_favoritas %}
+                <h2 class="mt-4 mb-3">Películas</h2>
+                <div class="row">
+                    {% for favorito in peliculas_favoritas %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card d-flex flex-column">
+                                <!-- Si tiene portada la mostramos, sino solo su título-->
+                                {% if favorito.pelicula.imagen_portada %}
+                                    <a href="{% url 'pelicula_detalle' favorito.pelicula.id %}">
+                                        <img src="{{ favorito.pelicula.imagen_portada }}" class="card-img-top"
+                                            alt="{{ favorito.pelicula.titulo }}">
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'pelicula_detalle' favorito.pelicula.id %}" class="text-decoration-none">
+                                        <div class="card-img-top d-flex align-items-center justify-content-center">
+                                            <h3 class="card-title text-center">
+                                                {{favorito.pelicula.titulo}}
+                                            </h3>
+                                        </div>
+                                    </a>
+                                {% endif %}
+
+                                <div class="card-body">
+                                    <!-- En el card-body mostramos la información del título  y los botones de visto y favorito -->
+                                    <h5 class="card-title">{{ favorito.pelicula.titulo }}</h5>
+                                    <p class="card-text">
+                                        <small>
+                                            {{ favorito.pelicula.director }} -
+                                            {{ favorito.pelicula.anio }}
+                                        </small>
+                                    </p>
+                                    <!-- Como ya está en favoritos solo el botón del corazón lleno -->
+                                    <div class="btn-group">
+                                        <a href="{% url 'marcar_favorito' 'pelicula' favorito.pelicula.id %}"
+                                            class="btn btn-outline-danger">
+                                            ❤️
+                                        </a>
+                                        <a href="{% url 'marcar_visto' 'pelicula' favorito.pelicula.id %}"
+                                            class="btn btn-outline-success">
+                                            {% if favorito.visto %}
+                                                ✅
+                                            {% else %}
+                                                ⬜
+                                            {% endif %}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if series_favoritas %}
+            <h2 class="mt-4 mb-3">Series</h2>
+            <div class="row">
+                {% for favorito in series_favoritas %}
+                <div class="col-md-4 mb-4">
+                    <div class="card d-flex flex-column">
+                        {% if favorito.serie.imagen_portada %}
+                        <a href="{% url 'serie_detalle' favorito.serie.id %}">
+                            <img src="{{ favorito.serie.imagen_portada }}" class="card-img-top"
+                                alt="{{ favorito.serie.titulo }}">
+                        </a>
+                        {% else %}
+                        <a href="{% url 'serie_detalle' favorito.serie.id %}" class="text-decoration-none">
+                            <div class="card-img-top d-flex align-items-center justify-content-center">
+                                <h3 class="card-title text-center">
+                                    {{favorito.serie.titulo}}
+                                </h3>
+                            </div>
+                        </a>
+                        {% endif %}
+
+                        <div class="card-body">
+                            <h5 class="card-title">{{ favorito.serie.titulo }}</h5>
+                            <p class="card-text">
+                                <small>
+                                    {{ favorito.serie.director }} -
+                                    {{ favorito.serie.anio }}
+                                </small>
+                            </p>
+                            <div class="btn-group">
+                                <a href="{% url 'marcar_favorito' 'serie' favorito.serie.id %}"
+                                    class="btn btn-outline-danger">
+                                    ❤️
+                                </a>
+                                <a href="{% url 'marcar_visto' 'serie' favorito.serie.id %}"
+                                    class="btn btn-outline-success">
+                                    {% if favorito.visto %}
+                                        ✅
+                                    {% else %}
+                                        ⬜
+                                    {% endif %}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        <!-- Si no hay películas o series favoritas mostramos un mensaje de Alerta -->
+            {% else %}
+            <div class="alert alert-info mt-4">
+                No tienes ningún contenido marcado como favorito todavía.
+            </div>
+        {% endif %}
+    </div>
+    {% endblock %}
+</body>
+
+</html>

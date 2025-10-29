@@ -1,0 +1,8 @@
+# Ignora el entorno virtual
+.venv/
+
+# Ignora los archivos de caché de Python
+__pycache__/
+
+# Ignora los archivos de caché de la carpeta .notflix
+.notflix/__pycache__/
