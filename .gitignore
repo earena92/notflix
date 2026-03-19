@@ -6,3 +6,6 @@ __pycache__/
 
 # Ignora los archivos de caché de la carpeta .notflix
 .notflix/__pycache__/
+
+# Ignora el archivo de la base de datos SQLite
+db.sqlite3
